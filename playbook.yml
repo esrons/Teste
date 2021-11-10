@@ -1,0 +1,23 @@
+- hosts: terr-ansi
+  tasks:
+  - name: Install Python3, Venv
+    apt:
+      pkg:
+      - python3
+      - virtualenv
+      update_cache: yes
+    become: yes
+  - name: Install depends with Pip
+    pip:
+      virtualenv: /home/ubuntu/tcc/venv
+      name:
+        - django
+        - djangorestframework
+  - name: Starting Project
+    shell: '. /home/ubuntu/tcc/venv/bin/activate; django-admin startproject setup /home/ubuntu/tcc'
+  - name: Change Host Settings
+    lineinfile: #comando para alterar alguma configuração
+      path: /home/ubuntu/tcc/setup/settings.py #caminho onde está o arquivo que será alterado
+      regexp: 'ALLOWED_HOSTS'
+      line: 'ALLOWED_HOSTS = ["*"]'
+      backrefs: yes #senão achar o arquivo não irá fazer nada
